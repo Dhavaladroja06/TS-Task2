@@ -20,8 +20,8 @@ const ProductButtomTab: React.FC = () => {
     <Tab.Navigator
       screenOptions={{
         headerRight: () => (
-          <TouchableOpacity onPress={handleLogout} style={{ marginRight: 10 }}>
-            <Text>Logout</Text>
+          <TouchableOpacity onPress={handleLogout} style={styles.LogoutButton}>
+            <Text style={styles.LogoutText}>Logout</Text>
           </TouchableOpacity>
         ),
         headerLeft: () => (
@@ -30,10 +30,10 @@ const ProductButtomTab: React.FC = () => {
             style={styles.Logo}
           />
         ),
-        title:"Shopping Go",
-        headerTintColor:"#fff",
-        headerTitleStyle:{
-          fontSize:24
+        title: "Shopping Go",
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontSize: 24
         },
         tabBarStyle: {
           backgroundColor: "#7e8fee",
@@ -47,8 +47,8 @@ const ProductButtomTab: React.FC = () => {
         tabBarIconStyle: {
           marginBottom: -5,
         },
-        headerStyle:{
-          backgroundColor:"#7e8fee",
+        headerStyle: {
+          backgroundColor: "#7e8fee",
         }
       }}
     >
@@ -91,9 +91,21 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginLeft: 10,
-    padding: 5  ,
+    padding: 5,
     backgroundColor: "#fff",
     borderRadius: 25
+  },
+  LogoutButton: {
+    marginRight: 15,
+    borderWidth: 2,
+    padding: 5,
+    borderColor: "#fff",
+    borderRadius: 5,
+    justifyContent: "center"
+  },
+  LogoutText :{
+    color: "#ffffff", 
+    fontWeight: "400" 
   }
 })
 

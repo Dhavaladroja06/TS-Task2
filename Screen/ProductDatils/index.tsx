@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../../Components/constent";
+import CustomLoader from "../../Components/CustomLoader";
 
 interface ProductDetailsProps {
   route: any;
@@ -23,6 +24,7 @@ interface Product {
   discountPercentage: number;
   stock: number;
   brand: string;
+  quantity: number;
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ route }) => {
@@ -33,7 +35,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ route }) => {
   useEffect(() => {
     fetch(`${API_URL}/products/${productId}`)
       .then((response) => response.json())
-      .then((data: Product) => setProductDetails(data))
+      .then((data: Product) => setProductDetails({ ...data, quantity: 1 }))
       .catch((error) =>
         console.error("Error fetching product details:", error)
       );
@@ -42,36 +44,39 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ route }) => {
   const addToCart = async () => {
     try {
       const userId = await AsyncStorage.getItem("userId");
-      const response = await fetch(
-        `${API_URL}/UserData/${userId}`
-      );
+      const response = await fetch(`${API_URL}/UserData/${userId}`);
 
       if (!response.ok) {
         throw new Error("Failed to fetch user data");
       }
 
       const userData = await response.json();
-      const updatedUserData = {
-        ...userData,
-        cart: [...userData.cart, productDetails],
-      };
+      const existingProductIndex = userData.cart.findIndex(
+        (product: Product) => product.title === productDetails?.title
+      );
 
-      const updateResponse = await fetch(
-        `${API_URL}/${userId}`,
-        {
+      if (existingProductIndex !== -1) {
+        userData.cart[existingProductIndex].quantity += 1;
+      } else {
+        const updatedUserData = {
+          ...userData,
+          cart: [...userData.cart, { ...productDetails, quantity: 1 }],
+        };
+
+        const updateResponse = await fetch(`${API_URL}/UserData/${userId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(updatedUserData),
-        }
-      );
+        });
 
-      if (!updateResponse.ok) {
-        throw new Error("Failed to update user cart");
+        if (!updateResponse.ok) {
+          throw new Error("Failed to update user cart");
+        }
       }
 
-      console.log("Product added to cart successfully");
+      alert("Product added to cart successfully");
     } catch (error) {
       console.error("Error adding product to cart:", error);
     }
@@ -84,11 +89,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ route }) => {
   if (!productDetails) {
     return (
       <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
+        <CustomLoader/>
       </View>
     );
   }
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainImage}>

@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, DeviceEventEmitter } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { API_URL } from "../../Components/constent";
+import Rating from "../../Components/Rating";
 
 interface Product {
     id: number;
     title: string;
     price: number;
     thumbnail: string;
+    rating: number;
 }
 
 const HomeScreen: React.FC = () => {
@@ -21,11 +23,11 @@ const HomeScreen: React.FC = () => {
             .catch((error) => console.error("Error fetching data:", error));
     }, []);
 
-    
-    
+
+
     const navigateToProductDetails = (productId: number) => {
         navigation.navigate('ProductDetails', { productId });
-      }
+    }
 
     const renderItem = ({ item }: { item: Product }) => (
         <TouchableOpacity onPress={() => navigateToProductDetails(item.id)}>
@@ -33,13 +35,11 @@ const HomeScreen: React.FC = () => {
                 <Image source={{ uri: item.thumbnail }} style={styles.productImage} />
                 <View style={styles.AddTOCartview}>
                     <View style={styles.priceview}>
-                        <Text style={styles.productName}>{item.title}</Text>
+                    <Text style={styles.productName}>{item.title.length > 23 ? item.title.substring(0, 23) + '...' : item.title}</Text>
                         <Text style={styles.productPrice}>$ {item.price}</Text>
                     </View>
                     <View>
-                        <TouchableOpacity style={styles.Button}>
-                            <Text style={styles.buttonText}>Add to cart</Text>
-                        </TouchableOpacity>
+                        <Rating rating={item.rating}></Rating>
                     </View>
                 </View>
             </View>

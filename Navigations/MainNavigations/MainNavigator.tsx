@@ -2,16 +2,19 @@ import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginStack from "../StackNavigations/LogInStack";
 import ProductButtomTab from "../ProductTabs/ProductTab";
-import { DeviceEventEmitter, Text, View } from "react-native";
+import { DeviceEventEmitter, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomLoader from "../../Components/CustomLoader";
 
 const MainNavigator: React.FC = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkSignInStatus = async () => {
       const signedInStatus = await AsyncStorage.getItem("isLoggedIn");
       setIsSignedIn(signedInStatus === "true");
+      setLoading(false);
     };
 
     const loginSubscription = DeviceEventEmitter.addListener("loginSuccess", () => {
@@ -31,6 +34,10 @@ const MainNavigator: React.FC = () => {
   }, []);
 
   const Stack = createNativeStackNavigator();
+
+  if (loading) {
+    return <CustomLoader />; 
+  }
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
