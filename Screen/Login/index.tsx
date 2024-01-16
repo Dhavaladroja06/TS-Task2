@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import Textinput from "../../Components/Textinput";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../../Components/constent";
 
 interface LoginFormData {
     phoneNumber: string;
@@ -25,8 +26,9 @@ const LoginScreen: React.FC = () => {
     };
 
     const onLogin = async (data: LoginFormData) => {
+        console.log(data.phoneNumber)
         try {
-            const response = await fetch(`http://192.168.1.6:3000/UserData?phoneNumber=${data.phoneNumber}`);
+            const response = await fetch(`${API_URL}/UserData?phoneNumber=${data.phoneNumber}`);
             if (response.ok) {
                 const userData = await response.json();
                 if (userData.length > 0) {

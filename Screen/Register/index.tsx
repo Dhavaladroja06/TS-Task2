@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 import { useForm } from "react-hook-form";
 import Textinput from "../../Components/Textinput";
 import { useNavigation } from "@react-navigation/native";
+import { API_URL } from "../../Components/constent";
 
 
 interface FormData {
@@ -22,7 +23,7 @@ const RegisterScreen: React.FC = () => {
 
     const onSubmit = async (data: FormData,) => {
         try {
-            const response = await fetch('http://192.168.1.6:3000/UserData', {
+            const response = await fetch(`${API_URL}/UserData`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
